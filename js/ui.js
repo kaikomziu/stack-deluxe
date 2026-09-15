@@ -46,14 +46,19 @@
     el.hud.classList.toggle("hidden", name !== "play");
   }
 
-  function flashPerfect() {
+  const JUDGE_LABEL = { perfect: "PERFECT!", fast: "FAST", late: "LATE" };
+
+  function flashJudge(type) {
+    el.perfectText.textContent = JUDGE_LABEL[type] || "";
+    el.perfectText.classList.remove("judge-perfect", "judge-fast", "judge-late");
+    el.perfectText.classList.add(`judge-${type}`);
     el.perfectText.classList.remove("hidden");
     el.perfectText.style.animation = "none";
     // 強制リフロー後に再度アニメーションを付け直す
     void el.perfectText.offsetWidth;
     el.perfectText.style.animation = "";
-    clearTimeout(flashPerfect._t);
-    flashPerfect._t = setTimeout(() => el.perfectText.classList.add("hidden"), 600);
+    clearTimeout(flashJudge._t);
+    flashJudge._t = setTimeout(() => el.perfectText.classList.add("hidden"), 600);
   }
 
   function startGame() {
@@ -104,7 +109,7 @@
   }
 
   Game.callbacks.onScore = (score) => { el.score.textContent = score; };
-  Game.callbacks.onPerfect = flashPerfect;
+  Game.callbacks.onJudge = flashJudge;
   Game.callbacks.onGameOver = handleGameOver;
 
   // ===== 入力 =====

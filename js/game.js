@@ -28,7 +28,7 @@ const Game = (() => {
 
   const callbacks = {
     onScore: null,
-    onPerfect: null,
+    onJudge: null, // ('perfect' | 'fast' | 'late') を受け取る
     onGameOver: null,
   };
 
@@ -194,6 +194,10 @@ const Game = (() => {
     const size = axis === "x" ? movingBox.sizeX : movingBox.sizeZ;
 
     const cut = computeCut(topPos, movingPos, size);
+    const delta = movingPos - topPos;
+    const isPerfect = Math.abs(delta) < PERFECT_THRESHOLD;
+    // dirと同じ符号 = 目標を通り過ぎた後(LATE)、逆符号 = まだ到達する前(FAST)
+    const judgement = isPerfect ? "perfect" : (Math.sign(delta) === Math.sign(movingBox.dir) ? "late" : "fast");
 
     if (!cut) {
       // 完全に外れた -> ゲームオーバー、ブロックは落下
@@ -207,12 +211,12 @@ const Game = (() => {
         life: 0,
       });
       movingBox = null;
+      if (callbacks.onJudge) callbacks.onJudge(judgement);
       triggerGameOver();
       return;
     }
 
     let { newCenter, newSize, leftover } = cut;
-    const isPerfect = Math.abs(movingPos - topPos) < PERFECT_THRESHOLD;
     if (isPerfect) {
       newCenter = topPos;
       newSize = size;
@@ -250,10 +254,10 @@ const Game = (() => {
       perfectsThisGame++;
       perfectStreak++;
       maxStreakThisGame = Math.max(maxStreakThisGame, perfectStreak);
-      if (callbacks.onPerfect) callbacks.onPerfect();
     } else {
       perfectStreak = 0;
     }
+    if (callbacks.onJudge) callbacks.onJudge(judgement);
     if (callbacks.onScore) callbacks.onScore(score);
 
     if (newSize < 0.35) {

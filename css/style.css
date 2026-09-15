@@ -66,10 +66,20 @@ html, body {
   text-align: center;
   font-size: clamp(28px, 6vw, 42px);
   font-weight: 800;
-  color: var(--gold);
-  text-shadow: 0 0 20px rgba(255, 212, 92, 0.8), 0 2px 6px rgba(0,0,0,0.6);
   letter-spacing: 0.05em;
   animation: perfectPop 0.6s ease-out forwards;
+}
+#perfectText.judge-perfect {
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(255, 212, 92, 0.8), 0 2px 6px rgba(0,0,0,0.6);
+}
+#perfectText.judge-fast {
+  color: #5ce1ff;
+  text-shadow: 0 0 20px rgba(92, 225, 255, 0.8), 0 2px 6px rgba(0,0,0,0.6);
+}
+#perfectText.judge-late {
+  color: #ff5c7a;
+  text-shadow: 0 0 20px rgba(255, 92, 122, 0.8), 0 2px 6px rgba(0,0,0,0.6);
 }
 @keyframes perfectPop {
   0% { transform: scale(0.4) translateY(10px); opacity: 0; }
