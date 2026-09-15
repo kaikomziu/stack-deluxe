@@ -30,6 +30,9 @@
     achProgress: $("achProgress"),
     rankingPanel: $("rankingPanel"),
     rankList: $("rankList"),
+    openChangelogBtn: $("openChangelogBtn"),
+    changelogPanel: $("changelogPanel"),
+    changelogList: $("changelogList"),
   };
 
   let stats = Storage.load();
@@ -134,6 +137,10 @@
   $("openAchievementsBtn2").addEventListener("click", () => openAchievements());
   $("openRankingBtn").addEventListener("click", () => openRanking());
   $("openRankingBtn2").addEventListener("click", () => openRanking());
+  el.openChangelogBtn.addEventListener("click", () => {
+    el.changelogList.innerHTML = renderChangelogList();
+    el.changelogPanel.classList.remove("hidden");
+  });
 
   document.querySelectorAll(".closeBtn").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -225,5 +232,6 @@
   // ===== 初期化 =====
   Game.init(el.canvas);
   updateBestDisplays();
+  renderVersionFooter();
   showScreen("start");
 })();

@@ -40,6 +40,10 @@
       <button id="openAchievementsBtn" class="btn btn-sub">🏆 実績</button>
       <button id="openRankingBtn" class="btn btn-sub">🌍 ランキング</button>
     </div>
+    <div class="versionRow">
+      <span id="versionText"></span>
+      <button id="openChangelogBtn" class="linkBtn">更新履歴</button>
+    </div>
   </div>
 
   <!-- ===== ゲームオーバー画面 ===== -->
@@ -86,10 +90,20 @@
     </div>
   </div>
 
+  <!-- ===== 更新履歴パネル ===== -->
+  <div id="changelogPanel" class="panel hidden">
+    <div class="panelHeader">
+      <h2>📝 更新履歴</h2>
+      <button class="closeBtn" data-close="changelogPanel">✕</button>
+    </div>
+    <div id="changelogList" class="panelBody"></div>
+  </div>
+
 </div>
 
 <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/version.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/achievements.js"></script>
 <script src="js/ranking.js"></script>
