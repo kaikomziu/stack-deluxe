@@ -1,0 +1,295 @@
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg-top: #1b1030;
+  --bg-bottom: #05030d;
+  --accent: #7c5cff;
+  --accent2: #ff6fb0;
+  --gold: #ffd45c;
+  --panel: #120e22;
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --text: #f4f1ff;
+  --text-dim: #b3a9d1;
+  color-scheme: dark;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: "Hiragino Sans", "Segoe UI", "Yu Gothic UI", sans-serif;
+  background: var(--bg-bottom);
+  color: var(--text);
+  touch-action: none;
+  user-select: none;
+}
+
+#gameCanvas {
+  position: fixed; inset: 0;
+  display: block;
+  width: 100%; height: 100%;
+  background: radial-gradient(ellipse at 50% 0%, var(--bg-top) 0%, var(--bg-bottom) 70%);
+}
+
+#ui {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hidden { display: none !important; }
+
+/* ===== HUD ===== */
+#hud { position: absolute; inset: 0; }
+
+#scoreBox {
+  position: absolute; top: max(24px, env(safe-area-inset-top)); left: 0; right: 0;
+  text-align: center;
+}
+#score {
+  font-size: clamp(48px, 12vw, 76px);
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 2px 18px rgba(124, 92, 255, 0.55);
+}
+#bestRow {
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  opacity: 0.9;
+}
+#bestRow span { color: var(--gold); }
+
+#perfectText {
+  position: absolute; top: 34%; left: 0; right: 0;
+  text-align: center;
+  font-size: clamp(28px, 6vw, 42px);
+  font-weight: 800;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(255, 212, 92, 0.8), 0 2px 6px rgba(0,0,0,0.6);
+  letter-spacing: 0.05em;
+  animation: perfectPop 0.6s ease-out forwards;
+}
+@keyframes perfectPop {
+  0% { transform: scale(0.4) translateY(10px); opacity: 0; }
+  25% { transform: scale(1.15) translateY(0); opacity: 1; }
+  70% { transform: scale(1) translateY(0); opacity: 1; }
+  100% { transform: scale(1) translateY(-18px); opacity: 0; }
+}
+
+/* ===== 画面共通(スタート/ゲームオーバー) ===== */
+.screen {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  pointer-events: auto;
+  background: linear-gradient(180deg, rgba(5,3,13,0.55), rgba(5,3,13,0.85) 60%, rgba(5,3,13,0.95));
+}
+
+.title {
+  font-size: clamp(40px, 11vw, 64px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 4px 24px rgba(124, 92, 255, 0.6);
+}
+.title span {
+  display: block;
+  font-size: 0.5em;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  letter-spacing: 0.3em;
+}
+.subtitle { color: var(--text-dim); font-size: 14px; max-width: 320px; margin-bottom: 6px; }
+
+.bestPanel {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 10px 28px;
+  margin-bottom: 8px;
+}
+.bestLabel { font-size: 12px; color: var(--text-dim); letter-spacing: 0.1em; }
+.bestValue { font-size: 28px; font-weight: 800; color: var(--gold); }
+
+.resultScore {
+  font-size: clamp(56px, 16vw, 96px);
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 4px 24px rgba(124, 92, 255, 0.6);
+}
+.resultSub { color: var(--text-dim); font-size: 14px; margin-bottom: 4px; }
+.resultSub span { color: var(--gold); font-weight: 700; }
+.newBest {
+  color: var(--gold);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  animation: newBestGlow 1.1s ease-in-out infinite;
+}
+@keyframes newBestGlow {
+  0%, 100% { text-shadow: 0 0 10px rgba(255,212,92,0.6); }
+  50% { text-shadow: 0 0 26px rgba(255,212,92,1); }
+}
+
+.menuRow { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+.btn {
+  appearance: none; border: none; cursor: pointer;
+  font-family: inherit; font-weight: 700; font-size: 16px;
+  border-radius: 14px;
+  padding: 14px 30px;
+  color: #fff;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.btn:active { transform: scale(0.95); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 6px 20px rgba(124, 92, 255, 0.45);
+}
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-sub {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--panel-border);
+  font-size: 14px;
+  padding: 10px 18px;
+}
+.btn-sub:hover { background: rgba(255,255,255,0.14); }
+.btn-small { padding: 10px 20px; font-size: 14px; }
+
+/* ===== ランキング送信 ===== */
+#submitRankBox {
+  display: flex; flex-direction: column; gap: 8px; align-items: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 14px 18px;
+  width: min(320px, 100%);
+}
+#nameInput {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--panel-border);
+  background: rgba(0,0,0,0.35);
+  color: var(--text);
+  font-size: 14px;
+  text-align: center;
+}
+#nameInput:focus { outline: 2px solid var(--accent); }
+#submitStatus { font-size: 12px; color: var(--text-dim); min-height: 16px; }
+
+/* ===== 実績トースト(ゲームオーバー画面内) ===== */
+#achToastArea { display: flex; flex-direction: column; gap: 6px; width: min(320px, 100%); }
+.achToastItem {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(90deg, rgba(255,212,92,0.18), rgba(255,212,92,0.05));
+  border: 1px solid rgba(255,212,92,0.4);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  text-align: left;
+}
+.achToastItem .icon { font-size: 20px; }
+.achToastItem .name { font-weight: 700; color: var(--gold); }
+.achToastItem .desc { color: var(--text-dim); font-size: 11px; }
+
+/* ===== 常設トースト(プレイ中の実績解除) ===== */
+#toastStack {
+  position: absolute; top: max(100px, calc(env(safe-area-inset-top) + 100px)); left: 0; right: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  pointer-events: none;
+}
+.toastPop {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(18,14,34,0.95);
+  border: 1px solid rgba(255,212,92,0.5);
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 13px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  animation: toastInOut 3s ease forwards;
+}
+.toastPop b { color: var(--gold); }
+@keyframes toastInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-6px); }
+}
+
+/* ===== パネル(実績/ランキング) ===== */
+.panel {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  background: var(--panel);
+  pointer-events: auto;
+  z-index: 20;
+}
+.panelHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--panel-border);
+  padding-top: max(18px, env(safe-area-inset-top));
+}
+.panelHeader h2 { font-size: 18px; font-weight: 800; }
+#achProgress { font-size: 13px; color: var(--text-dim); font-weight: 500; margin-left: 6px; }
+.closeBtn {
+  appearance: none; border: none; background: rgba(255,255,255,0.08);
+  color: var(--text); width: 34px; height: 34px; border-radius: 50%;
+  font-size: 16px; cursor: pointer;
+}
+.panelBody { flex: 1; overflow-y: auto; padding: 14px 16px 40px; -webkit-overflow-scrolling: touch; }
+
+/* 実績リスト */
+.achCategory {
+  font-size: 12px; letter-spacing: 0.08em; color: var(--accent2);
+  margin: 18px 4px 8px; font-weight: 800;
+}
+.achCategory:first-child { margin-top: 4px; }
+.achItem {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.achItem.locked { opacity: 0.55; }
+.achItem .icon {
+  font-size: 24px; width: 38px; height: 38px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.06); border-radius: 10px;
+}
+.achItem.unlocked .icon { background: rgba(255,212,92,0.18); }
+.achItem .body { flex: 1; min-width: 0; }
+.achItem .name { font-weight: 700; font-size: 14px; }
+.achItem .desc { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.achItem .prog {
+  font-size: 11px; color: var(--text-dim); margin-top: 4px;
+}
+.achBarTrack { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.08); margin-top: 4px; overflow: hidden; }
+.achBarFill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); }
+
+/* ランキングリスト */
+.rankLoading, .rankEmpty { text-align: center; color: var(--text-dim); padding: 40px 0; font-size: 14px; }
+.rankRow {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--panel-border);
+}
+.rankRow .rank { width: 34px; font-weight: 800; color: var(--text-dim); text-align: center; }
+.rankRow.top1 .rank { color: #ffd45c; }
+.rankRow.top2 .rank { color: #cdd6e0; }
+.rankRow.top3 .rank { color: #e0a86f; }
+.rankRow .rname { flex: 1; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rankRow .rscore { font-weight: 800; color: var(--gold); }
+.rankMine { background: rgba(124,92,255,0.18); border-radius: 10px; }
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 480px) {
+  .btn { padding: 12px 22px; font-size: 15px; }
+}

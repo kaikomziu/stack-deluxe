@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>STACK DELUXE - 積み上げタワーゲーム</title>
+<meta name="description" content="動くブロックをタップで積み上げる爽快タワーゲーム。ぴったり重ねてPERFECTを連続で狙おう。実績40種以上・世界ランキング搭載。">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+
+<div id="ui">
+  <!-- ===== HUD (プレイ中) ===== -->
+  <div id="hud" class="hidden">
+    <div id="scoreBox">
+      <div id="score">0</div>
+      <div id="bestRow">BEST <span id="bestScore">0</span></div>
+    </div>
+    <div id="perfectText" class="hidden">PERFECT!</div>
+  </div>
+
+  <!-- ===== スタート画面 ===== -->
+  <div id="startScreen" class="screen">
+    <h1 class="title">STACK<span>DELUXE</span></h1>
+    <p class="subtitle">クリック / タップ / スペースキーでブロックを落として積み上げろ</p>
+    <div class="bestPanel">
+      <div class="bestLabel">自己ベスト</div>
+      <div id="startBest" class="bestValue">0</div>
+    </div>
+    <button id="startBtn" class="btn btn-primary">スタート</button>
+    <div class="menuRow">
+      <button id="openAchievementsBtn" class="btn btn-sub">🏆 実績</button>
+      <button id="openRankingBtn" class="btn btn-sub">🌍 ランキング</button>
+    </div>
+  </div>
+
+  <!-- ===== ゲームオーバー画面 ===== -->
+  <div id="gameOverScreen" class="screen hidden">
+    <h2 id="newBestLabel" class="newBest hidden">新記録！</h2>
+    <div class="resultScore" id="resultScore">0</div>
+    <div class="resultSub">段積み上げた（PERFECT <span id="resultPerfects">0</span>回）</div>
+
+    <div id="achToastArea"></div>
+
+    <div id="submitRankBox" class="hidden">
+      <input id="nameInput" type="text" maxlength="12" placeholder="名前 (12文字まで)">
+      <button id="submitRankBtn" class="btn btn-primary btn-small">世界ランキングに送信</button>
+      <div id="submitStatus"></div>
+    </div>
+
+    <div class="menuRow">
+      <button id="retryBtn" class="btn btn-primary">もう一回</button>
+      <button id="homeBtn" class="btn btn-sub">ホームへ</button>
+    </div>
+    <div class="menuRow">
+      <button id="openAchievementsBtn2" class="btn btn-sub">🏆 実績</button>
+      <button id="openRankingBtn2" class="btn btn-sub">🌍 ランキング</button>
+    </div>
+  </div>
+
+  <!-- ===== 実績パネル ===== -->
+  <div id="achievementsPanel" class="panel hidden">
+    <div class="panelHeader">
+      <h2>実績 <span id="achProgress"></span></h2>
+      <button class="closeBtn" data-close="achievementsPanel">✕</button>
+    </div>
+    <div id="achList" class="panelBody"></div>
+  </div>
+
+  <!-- ===== ランキングパネル ===== -->
+  <div id="rankingPanel" class="panel hidden">
+    <div class="panelHeader">
+      <h2>🌍 世界ランキング</h2>
+      <button class="closeBtn" data-close="rankingPanel">✕</button>
+    </div>
+    <div id="rankList" class="panelBody">
+      <div class="rankLoading">読み込み中...</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/storage.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/ranking.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
